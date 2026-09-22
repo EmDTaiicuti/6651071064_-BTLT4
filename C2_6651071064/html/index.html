@@ -6,8 +6,78 @@
   <meta name="description" content="Blog cá nhân của Nguyễn Đức Tài - Sinh viên IT tại UTC2, định hướng trở thành giáo viên Tin học.">
   <title>Nguyễn Đức Tài — Blog cá nhân</title>
   <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* ===== INTRO SCREEN (tự chứa, không đụng style.css) ===== */
+    #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #f8fafc;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #intro.intro-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .intro-inner {
+      text-align: center;
+      padding: 0 1.5rem;
+    }
+    .intro-logo {
+      font-size: clamp(2rem, 6vw, 3.2rem);
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin: 0 0 1rem;
+    }
+    .intro-logo .intro-cursor {
+      display: inline-block;
+      color: #38bdf8;
+      animation: intro-blink 1s step-end infinite;
+    }
+    @keyframes intro-blink { 50% { opacity: 0; } }
+    .intro-text {
+      font-family: 'Courier New', monospace;
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+      min-height: 1.4em;
+      color: #cbd5e1;
+      margin: 0 0 1.5rem;
+    }
+    .intro-bar {
+      width: 220px;
+      max-width: 60vw;
+      height: 3px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .intro-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: #38bdf8;
+      transition: width 1.8s ease;
+    }
+    body.intro-lock {
+      overflow: hidden;
+      height: 100vh;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- ===== INTRO SCREEN: hiện khi mới vào trang ===== -->
+  <div id="intro" aria-hidden="true">
+    <div class="intro-inner">
+      <p class="intro-logo">ĐT<span class="intro-cursor">_</span></p>
+      <p class="intro-text" id="introText"></p>
+      <div class="intro-bar"><div class="intro-bar-fill" id="introBarFill"></div></div>
+    </div>
+  </div>
 
   <!-- ===== HEADER: thanh điều hướng sticky ===== -->
   <header class="site-header">
@@ -176,6 +246,45 @@
       <a href="#hero" class="back-to-top">Về đầu trang ↑</a>
     </div>
   </footer>
+
+  <script>
+    // ===== INTRO SCREEN LOGIC =====
+    (function () {
+      var intro = document.getElementById('intro');
+      var introText = document.getElementById('introText');
+      var introBarFill = document.getElementById('introBarFill');
+      if (!intro || !introText || !introBarFill) return;
+
+      var fullText = 'Xin chào, mình là Đức Tài...';
+      var i = 0;
+
+      document.body.classList.add('intro-lock');
+
+      // Chạy thanh loading
+      setTimeout(function () {
+        introBarFill.style.width = '100%';
+      }, 100);
+
+      // Hiệu ứng gõ chữ
+      function typeChar() {
+        if (i < fullText.length) {
+          introText.textContent += fullText.charAt(i);
+          i++;
+          setTimeout(typeChar, 45);
+        }
+      }
+      typeChar();
+
+      // Ẩn intro sau khi loading xong
+      setTimeout(function () {
+        intro.classList.add('intro-hidden');
+        document.body.classList.remove('intro-lock');
+        setTimeout(function () {
+          intro.remove();
+        }, 700);
+      }, 2200);
+    })();
+  </script>
 
 </body>
 </html>
